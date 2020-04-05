@@ -10,6 +10,7 @@ python-dotenv = "*"
 
 [packages]
 flask = "*"
+flask-mysqldb = "*"
 
 [requires]
 python_version = "3.8"
