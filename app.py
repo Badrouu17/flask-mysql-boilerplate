@@ -15,7 +15,6 @@ with app.app_context():
     db = mysql.init_mysql()
     mysql.db = db
 
-
 app.register_blueprint(userRoute.user, url_prefix='/user')
 
 app.register_error_handler(HTTPException, error_handler)
