@@ -11,6 +11,9 @@ python-dotenv = "*"
 [packages]
 flask = "*"
 flask-mysqldb = "*"
+flask-bcrypt = "*"
+pycryptodomex = "*"
+pyjwt = "*"
 
 [requires]
 python_version = "3.8"
