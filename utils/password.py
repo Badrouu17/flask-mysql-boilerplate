@@ -1,10 +1,10 @@
+import time
 import datetime
-from xml.etree.ElementTree import \
-    tostring
 
-from Cryptodome import (
-    Hash,
-    Random)
+import codecs
+import os
+from hashlib import (sha256)
+
 from flask_bcrypt import (
     check_password_hash,
     generate_password_hash)
@@ -33,12 +33,26 @@ def changePasswordAfter(jwtTimestamp, passwordChangedAt):
     return False
 
 
-def createPasswordResetToken():
-    resetToken = Random.get_random_bytes(
-        32)
-    password_reset_token = Hash.SHA256.new(
-    ).update(resetToken).hexdigest()
-    password_reset_expire = datetime.datetime.now(
-    ).microsecond + 10 * 60 * 1000
+def cryptToken(token):
+    b = bytes(token, 'utf-8')
+    crypted = sha256(
+    )
+    crypted.update(
+        b)
 
-    return {resetToken, password_reset_token, password_reset_expire}
+    return crypted.hexdigest()
+
+
+def createPasswordResetToken():
+    resetToken = codecs.encode(
+        os.urandom(32), 'hex').decode()
+
+    password_reset_token = cryptToken(
+        resetToken)
+
+    password_reset_expire = int(
+        round(time.time() * 1000)) + 10 * 60 * 1000
+
+    return {"rt": resetToken,
+            "prt": password_reset_token,
+            "pre": password_reset_expire}

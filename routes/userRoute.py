@@ -11,8 +11,8 @@ user.add_url_rule('/signup', 'signup', authController.signup,
 user.add_url_rule('/login', 'login', authController.login,
                   methods=['POST'])
 
-# user.add_url_rule('/forgotPassword', 'forgotPassword', authController.forgotPassword,
-#                   methods=['POST'])
+user.add_url_rule('/forgotPassword', 'forgotPassword', authController.forgotPassword,
+                  methods=['POST'])
 
-# user.add_url_rule('/resetPassword/<token>', 'resetPassword', authController.resetPassword,
-#                   methods=['PATCH'])
+user.add_url_rule('/resetPassword/<token>', 'resetPassword', authController.resetPassword,
+                  methods=['PATCH'])

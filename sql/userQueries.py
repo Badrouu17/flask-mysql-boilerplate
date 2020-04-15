@@ -32,12 +32,12 @@ def getUserByResetToken(prt, now):
                 users.password_reset_expires > {now} """
 
 
-def resetPassword(id, psw, pca):
+def updateResetPassword(id, psw, pca):
     return f""" UPDATE users
                 SET users.password = '{psw}', 
                 users.password_reset_token = NULL, 
                 users.password_reset_expires = NULL,
-                users.password_changed_at = {pca}
+                users.password_changed_at = '{pca}'
                 WHERE users.user_id = {id} """
 
 
