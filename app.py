@@ -4,8 +4,9 @@ from routes import userRoute, authRoute
 from mysql import mysql
 from utils.errorHandler import error_handler
 from werkzeug.exceptions import HTTPException
-
+import os
 from flask import Flask
+import cloudinary
 app = Flask(__name__)
 
 env_path = Path('.') / '.env'
@@ -15,6 +16,15 @@ load_dotenv(
 with app.app_context():
     db = mysql.init_mysql()
     mysql.db = db
+
+cloudinary.config(
+    cloud_name=os.getenv(
+        "CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv(
+        "CLOUDINARY_API_KEY"),
+    api_secret=os.getenv(
+        "CLOUDINARY_API_SECRET")
+)
 
 app.register_blueprint(
     authRoute.auth, url_prefix='/api/v1/auth')
