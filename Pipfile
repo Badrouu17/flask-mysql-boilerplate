@@ -15,6 +15,7 @@ flask-bcrypt = "*"
 pyjwt = "*"
 moment = "*"
 cloudinary = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"

@@ -7,7 +7,12 @@ from werkzeug.exceptions import HTTPException
 import os
 from flask import Flask
 import cloudinary
+from flask_cors import CORS
+
 app = Flask(__name__)
+
+CORS(app)
+
 
 env_path = Path('.') / '.env'
 load_dotenv(
