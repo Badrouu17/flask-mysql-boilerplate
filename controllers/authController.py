@@ -147,14 +147,48 @@ def resetPassword(token):
 
     nowDate = int(
         round(time.time() * 1000))
-    print("🚨", nowDate)
     db.execute(updateResetPassword(
         user["user_id"], hashed, nowDate))
     cnx.commit()
     # 4) Log the user in, send JWT
     return createSendToken(user)
 
-# Authorization
+
+def updatePassword():
+    data = req.get_json()
+    if "currentPassword" not in data or "newPassword" not in data:
+        abort(
+            400, "please enter the needed data!")
+
+    cnx = use_db()
+    db = cnx.cursor()
+    db.execute(getUserWithId(
+        req.user["user_id"]))
+    user = db.fetchone()
+
+    if "name" not in user:
+        abort(
+            400, "cant find this user")
+
+    if not comparePasswords(user["password"], data["currentPassword"]):
+        abort(
+            401, 'Your current password is wrong')
+
+    hashed = hashPassword(
+        data["newPassword"])
+    nowDate = int(
+        round(time.time() * 1000))
+
+    db.execute(updateResetPassword(
+        req.user["user_id"], hashed, nowDate))
+    cnx.commit()
+
+    db.execute(getUserWithId(
+        req.user["user_id"]))
+    user = db.fetchone()
+
+    # send the token
+    return createSendToken(user)
 
 
 def protect():
@@ -170,7 +204,6 @@ def protect():
     try:
         decoded = checkToken(
             token)
-        print("🚨", decoded)
     except:
         abort(
             401, 'wrong or expired token.')
@@ -190,4 +223,5 @@ def protect():
         return abort(401, 'User recently changed password! Please log in again.')
 
     # GRANT ACCESS TO PROTECTED ROUTE
-    return "ok"
+    del user["password"]
+    req.user = user

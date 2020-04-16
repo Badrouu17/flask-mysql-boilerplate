@@ -1,21 +1,17 @@
 from flask import Blueprint
-from controllers import authController
+from controllers import userController, authController
 
 user = Blueprint(
     'user', __name__)
 
+user.before_request(
+    authController.protect)
 
-user.add_url_rule('/signup', 'signup', authController.signup,
-                  methods=['POST'])
+user.add_url_rule('/getme', 'getme', userController.getMe,
+                  methods=['GET'])
 
-user.add_url_rule('/login', 'login', authController.login,
-                  methods=['POST'])
-
-user.add_url_rule('/forgotPassword', 'forgotPassword', authController.forgotPassword,
-                  methods=['POST'])
-
-user.add_url_rule('/resetPassword/<token>', 'resetPassword', authController.resetPassword,
+user.add_url_rule('/updatePassword', 'updatePassword', authController.updatePassword,
                   methods=['PATCH'])
 
-user.add_url_rule('/protect', 'protect', authController.protect,
-                  methods=['POST'])
+user.add_url_rule('/deleteMe', 'deleteMe', userController.deleteMe,
+                  methods=['DELETE'])

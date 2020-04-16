@@ -13,8 +13,8 @@ def hashPassword(password):
     return generate_password_hash(password, 12).decode('UTF-8')
 
 
-def comparePasswords(curr, new):
-    return check_password_hash(curr, new)
+def comparePasswords(curr, newCurr):
+    return check_password_hash(curr, newCurr)
 
 
 def changedPasswordAfter(jwtTimestamp, passwordChangedAt):
