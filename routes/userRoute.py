@@ -16,3 +16,6 @@ user.add_url_rule('/forgotPassword', 'forgotPassword', authController.forgotPass
 
 user.add_url_rule('/resetPassword/<token>', 'resetPassword', authController.resetPassword,
                   methods=['PATCH'])
+
+user.add_url_rule('/protect', 'protect', authController.protect,
+                  methods=['POST'])

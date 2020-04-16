@@ -2,10 +2,10 @@ from mysql.mysql import use_db
 from flask import request as req, abort
 from utils.response import res
 from utils.password import (hashPassword, comparePasswords,
-                            changePasswordAfter,
+                            changedPasswordAfter,
                             createPasswordResetToken, cryptToken)
 from utils.jwt import (
-    signToken)
+    signToken, checkToken)
 
 from sql.userQueries import (
     insertUser, getUserWithId,
@@ -15,7 +15,6 @@ from sql.userQueries import (
 
 from utils.mail import Mailer
 import time
-import moment
 
 
 def createSendToken(user):
@@ -24,6 +23,8 @@ def createSendToken(user):
     # remove password from output
     del user["password"]
     return res(200, {"token": token, "user": user})
+
+# authentication
 
 
 def signup():
@@ -144,11 +145,49 @@ def resetPassword(token):
     hashed = hashPassword(
         data["password"])
 
-    nowDate = moment.now(
-    ).format('YYYY-MM-DD hh:mm:ss')
+    nowDate = int(
+        round(time.time() * 1000))
     print("🚨", nowDate)
     db.execute(updateResetPassword(
         user["user_id"], hashed, nowDate))
     cnx.commit()
     # 4) Log the user in, send JWT
     return createSendToken(user)
+
+# Authorization
+
+
+def protect():
+    # 1) Getting token and check of it's there
+    if "Authorization" not in req.headers:
+        abort(
+            401, 'you are not logged in, please login')
+
+    token = req.headers["Authorization"].split(' ')[
+        1]
+
+    # 2) Verification token
+    try:
+        decoded = checkToken(
+            token)
+        print("🚨", decoded)
+    except:
+        abort(
+            401, 'wrong or expired token.')
+
+    # 3) Check if user still exists
+    cnx = use_db()
+    db = cnx.cursor()
+    db.execute(
+        getUserWithId(decoded["id"]))
+    user = db.fetchone()
+    if "user_id" not in user:
+        abort(
+            401, 'The user belonging to this token does no longer exist.')
+
+    # 4) Check if user changed password after the token was issued
+    if changedPasswordAfter(decoded["iat"], user["password_changed_at"]):
+        return abort(401, 'User recently changed password! Please log in again.')
+
+    # GRANT ACCESS TO PROTECTED ROUTE
+    return "ok"

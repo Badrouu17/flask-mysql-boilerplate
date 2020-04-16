@@ -1,5 +1,4 @@
 import time
-import datetime
 
 import codecs
 import os
@@ -18,17 +17,11 @@ def comparePasswords(curr, new):
     return check_password_hash(curr, new)
 
 
-def parseDate(myDateTime):
-    res = (datetime.datetime(myDateTime.year, myDateTime.month, myDateTime.day, myDateTime.hour,
-                             myDateTime.minute, myDateTime.second) - datetime.datetime(1970, 1, 1)).total_seconds()
-    return res
-
-
-def changePasswordAfter(jwtTimestamp, passwordChangedAt):
+def changedPasswordAfter(jwtTimestamp, passwordChangedAt):
     if passwordChangedAt:
-        changedTime = parseDate(
-            passwordChangedAt) / 1000
-        return jwtTimestamp < changedTime
+        print('🕧', jwtTimestamp,
+              passwordChangedAt)
+        return jwtTimestamp < passwordChangedAt
     # false means not changed
     return False
 
