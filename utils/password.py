@@ -4,9 +4,7 @@ import codecs
 import os
 from hashlib import (sha256)
 
-from flask_bcrypt import (
-    check_password_hash,
-    generate_password_hash)
+from flask_bcrypt import (check_password_hash, generate_password_hash)
 
 
 def hashPassword(password):
@@ -19,8 +17,7 @@ def comparePasswords(curr, newCurr):
 
 def changedPasswordAfter(jwtTimestamp, passwordChangedAt):
     if passwordChangedAt:
-        print('🕧', jwtTimestamp,
-              passwordChangedAt)
+        print('🕧', jwtTimestamp, passwordChangedAt)
         return jwtTimestamp < passwordChangedAt
     # false means not changed
     return False
@@ -28,23 +25,18 @@ def changedPasswordAfter(jwtTimestamp, passwordChangedAt):
 
 def cryptToken(token):
     b = bytes(token, 'utf-8')
-    crypted = sha256(
-    )
-    crypted.update(
-        b)
+    crypted = sha256()
+    crypted.update(b)
 
     return crypted.hexdigest()
 
 
 def createPasswordResetToken():
-    resetToken = codecs.encode(
-        os.urandom(32), 'hex').decode()
+    resetToken = codecs.encode(os.urandom(32), 'hex').decode()
 
-    password_reset_token = cryptToken(
-        resetToken)
+    password_reset_token = cryptToken(resetToken)
 
-    password_reset_expire = int(
-        round(time.time() * 1000)) + 10 * 60 * 1000
+    password_reset_expire = int(round(time.time() * 1000)) + 10 * 60 * 1000
 
     return {"rt": resetToken,
             "prt": password_reset_token,
