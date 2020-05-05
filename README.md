@@ -1,6 +1,6 @@
 ## PYTHON-FLASK + MYSQL BOILERPLATE
 
-an RESTFul api boilerplate using modern technologies: python, flask, mysql, cloudinary.
+RESTful API boilerplate using modern technologies: python, flask, mysql, cloudinary.
 
 ## Available Scripts
 
